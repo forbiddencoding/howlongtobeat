@@ -1,0 +1,502 @@
+{
+  "Props": {
+    "PageProps": {
+      "Game": {
+        "Count": 2,
+        "Data": {
+          "game": [
+            {
+              "game_id": 10270,
+              "game_name": "The Witcher 3: Wild Hunt",
+              "game_name_date": 0,
+              "count_playing": 431,
+              "count_backlog": 18733,
+              "count_replay": 1768,
+              "count_custom": 1294,
+              "count_comp": 18143,
+              "count_retired": 1059,
+              "count_review": 4611,
+              "review_score": 94,
+              "game_alias": "The Witcher III: Wild Hunt",
+              "game_image": "10270_The_Witcher_3_Wild_Hunt.jpg",
+              "game_type": "game",
+              "game_parent": 0,
+              "profile_summary": "In The Witcher 3 an ancient evil stirs, awakening. An evil that sows terror and abducts the young. An evil whose name is spoken only in whispers: the Wild Hunt. Led by four wraith commanders, this ravenous band of phantoms is the ultimate predator and has been for centuries. Its quarry: humans.",
+              "profile_dev": "CD Projekt RED",
+              "profile_pub": "CD Projekt, Warner Bros. Interactive Entertainment",
+              "profile_platform": "Nintendo Switch, PC, PlayStation 4, PlayStation 5, Xbox One, Xbox Series X/S",
+              "profile_genre": "Third-Person, Action, Open World, Role-Playing",
+              "profile_steam": 292030,
+              "profile_steam_alt": 0,
+              "profile_itch": 0,
+              "profile_ign": "96dabe93-682c-4d61-9f49-e462af876af2",
+              "release_world": "2015-05-19",
+              "release_na": "2015-05-19",
+              "release_eu": "2015-05-19",
+              "release_jp": "2015-05-19",
+              "rating_esrb": "M",
+              "rating_pegi": "",
+              "rating_cero": "",
+              "comp_lvl_sp": 1,
+              "comp_lvl_spd": 1,
+              "comp_lvl_co": 0,
+              "comp_lvl_mp": 0,
+              "comp_lvl_combine": 0,
+              "comp_lvl_platform": 0,
+              "comp_all_count": 9923,
+              "comp_all": 369312,
+              "comp_all_l": 209418,
+              "comp_all_h": 1562168,
+              "comp_all_avg": 389424,
+              "comp_all_med": 349200,
+              "comp_main_count": 2318,
+              "comp_main": 185004,
+              "comp_main_l": 117264,
+              "comp_main_h": 308502,
+              "comp_main_avg": 190008,
+              "comp_main_med": 180000,
+              "comp_plus_count": 5666,
+              "comp_plus": 371375,
+              "comp_plus_l": 221688,
+              "comp_plus_h": 1055088,
+              "comp_plus_avg": 382749,
+              "comp_plus_med": 360000,
+              "comp_100_count": 1939,
+              "comp_100": 624261,
+              "comp_100_l": 420131,
+              "comp_100_h": 1689643,
+              "comp_100_avg": 647321,
+              "comp_100_med": 601200,
+              "comp_speed_count": 13,
+              "comp_speed": 56421,
+              "comp_speed_min": 11341,
+              "comp_speed_max": 108000,
+              "comp_speed_avg": 60528,
+              "comp_speed_med": 52314,
+              "comp_speed100_count": 3,
+              "comp_speed100": 222000,
+              "comp_speed100_min": 180000,
+              "comp_speed100_max": 288000,
+              "comp_speed100_avg": 228000,
+              "comp_speed100_med": 216000,
+              "count_total": 46983,
+              "invested_co_count": 0,
+              "invested_co": 0,
+              "invested_co_l": 0,
+              "invested_co_h": 0,
+              "invested_co_avg": 0,
+              "invested_co_med": 0,
+              "invested_mp_count": 0,
+              "invested_mp": 0,
+              "invested_mp_l": 0,
+              "invested_mp_h": 0,
+              "invested_mp_avg": 0,
+              "invested_mp_med": 0,
+              "added_stats": "2023-08-03 17:40:04"
+            }
+          ],
+          "individuality": [
+            {
+              "platform": "Nintendo Switch",
+              "count_comp": "203",
+              "comp_main": "202142",
+              "comp_plus": "396066",
+              "comp_100": "669644",
+              "comp_all": "370359",
+              "compare": "105.0000"
+            },
+            {
+              "platform": "PC, PlayStation 4, Xbox One",
+              "count_comp": "9600",
+              "comp_main": "189228",
+              "comp_plus": "392456",
+              "comp_100": "646015",
+              "comp_all": "390224",
+              "compare": "110.0000"
+            },
+            {
+              "platform": "PlayStation 5, Xbox Series X/S",
+              "count_comp": "119",
+              "comp_main": "183529",
+              "comp_plus": "352296",
+              "comp_100": "618789",
+              "comp_all": "338870",
+              "compare": "95.0000"
+            }
+          ],
+          "relationships": [
+            {
+              "game_id": 107256,
+              "game_name": "New Quest 'Contract: Missing Miners'",
+              "game_type": "dlc",
+              "comp_main": 960,
+              "comp_plus": 1800,
+              "comp_100": 0,
+              "comp_all": 1308,
+              "comp_all_count": 5,
+              "count_backlog": 13,
+              "review_score": 75
+            },
+            {
+              "game_id": 107393,
+              "game_name": "New Quest 'Fool's Gold'",
+              "game_type": "dlc",
+              "comp_main": 1635,
+              "comp_plus": 1800,
+              "comp_100": 2700,
+              "comp_all": 1785,
+              "comp_all_count": 6,
+              "count_backlog": 14,
+              "review_score": 73
+            },
+            {
+              "game_id": 107302,
+              "game_name": "New Quest: 'Scavenger Hunt: Wolf School Gear'",
+              "game_type": "dlc",
+              "comp_main": 1283,
+              "comp_plus": 2100,
+              "comp_100": 0,
+              "comp_all": 1450,
+              "comp_all_count": 6,
+              "count_backlog": 14,
+              "review_score": 65
+            },
+            {
+              "game_id": 107257,
+              "game_name": "New Quest 'Contract: Skellige's Most Wanted'",
+              "game_type": "dlc",
+              "comp_main": 1260,
+              "comp_plus": 1800,
+              "comp_100": 0,
+              "comp_all": 1548,
+              "comp_all_count": 5,
+              "count_backlog": 13,
+              "review_score": 70
+            },
+            {
+              "game_id": 107515,
+              "game_name": "New Quest 'Where the Cat and Wolf Play...'",
+              "game_type": "dlc",
+              "comp_main": 1570,
+              "comp_plus": 1800,
+              "comp_100": 0,
+              "comp_all": 1658,
+              "comp_all_count": 4,
+              "count_backlog": 13,
+              "review_score": 80
+            },
+            {
+              "game_id": 30003,
+              "game_name": "Hearts of Stone",
+              "game_type": "dlc",
+              "comp_main": 35502,
+              "comp_plus": 50688,
+              "comp_100": 65683,
+              "comp_all": 49371,
+              "comp_all_count": 1159,
+              "count_backlog": 875,
+              "review_score": 90
+            },
+            {
+              "game_id": 33660,
+              "game_name": "Blood and Wine",
+              "game_type": "dlc",
+              "comp_main": 54949,
+              "comp_plus": 101784,
+              "comp_100": 146441,
+              "comp_all": 102565,
+              "comp_all_count": 959,
+              "count_backlog": 1012,
+              "review_score": 94
+            }
+          ],
+          "userReviews": {
+            "10": "5",
+            "20": "4",
+            "30": "5",
+            "40": "17",
+            "50": "24",
+            "60": "48",
+            "65": "2",
+            "70": "140",
+            "75": "4",
+            "80": "416",
+            "85": "15",
+            "90": "1012",
+            "95": "46",
+            "100": "2940",
+            "review_count": 4533
+          },
+          "platformData": [
+            {
+              "platform": "Nintendo Switch",
+              "count_comp": 203,
+              "count_total": 309,
+              "comp_main": 202142,
+              "comp_plus": 396066,
+              "comp_100": 669644,
+              "comp_low": 65783,
+              "comp_high": 1350000
+            },
+            {
+              "platform": "PC",
+              "count_comp": 6682,
+              "count_total": 12102,
+              "comp_main": 190834,
+              "comp_plus": 378091,
+              "comp_100": 642735,
+              "comp_low": 49523,
+              "comp_high": 2700000
+            },
+            {
+              "platform": "PlayStation 4",
+              "count_comp": 2225,
+              "count_total": 4023,
+              "comp_main": 186831,
+              "comp_plus": 388271,
+              "comp_100": 668426,
+              "comp_low": 54000,
+              "comp_high": 2755024
+            },
+            {
+              "platform": "PlayStation 5",
+              "count_comp": 73,
+              "count_total": 117,
+              "comp_main": 192817,
+              "comp_plus": 370660,
+              "comp_100": 528040,
+              "comp_low": 90000,
+              "comp_high": 900000
+            },
+            {
+              "platform": "Xbox One",
+              "count_comp": 693,
+              "count_total": 1146,
+              "comp_main": 190020,
+              "comp_plus": 411006,
+              "comp_100": 626883,
+              "comp_low": 54842,
+              "comp_high": 1713150
+            },
+            {
+              "platform": "Xbox Series X/S",
+              "count_comp": 46,
+              "count_total": 78,
+              "comp_main": 174240,
+              "comp_plus": 333932,
+              "comp_100": 709538,
+              "comp_low": 86400,
+              "comp_high": 1083900
+            }
+          ]
+        }
+      },
+      "IgnWikiSlug": "the-witcher-3-wild-hunt",
+      "IgnMap": {
+        "__typename": "Map",
+        "mapType": "mapgenie",
+        "mapName": "White Orchard",
+        "mapSlug": "white-orchard",
+        "objectSlug": "the-witcher-3-wild-hunt",
+        "objectName": "The Witcher 3",
+        "width": 1,
+        "height": 1,
+        "minZoom": 8,
+        "maxZoom": 14,
+        "tilesets": [
+          "https://tiles.mapgenie.io/games/witcher-3/white-orchard/default/{z}/{x}/{y}.png"
+        ],
+        "initialLat": 83.937238401332,
+        "initialLng": -168.44211701243,
+        "initialZoom": 11
+      },
+      "IgnWikiNav": [
+        {
+          "__typename": "WikiNavigation",
+          "label": "The Witcher 3 Guide"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Beginner's Guide - Witcher 3 Features and Things to Know ",
+          "url": "Beginner%27s_Guide_-_Witcher_3_Features_and_Things_to_Know_"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Things the Witcher 3 Doesn't Tell You",
+          "url": "Things_the_Witcher_3_Doesn%27t_Tell_You"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Walkthrough",
+          "url": "Walkthrough"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Witcher Gear",
+          "url": "Witcher_Gear"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Side Quests",
+          "url": "Side_Quests"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Sex and Romance",
+          "url": "Sex_and_Romance"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Cheats and Secrets",
+          "url": "Cheats_and_Secrets"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Tips and Tricks",
+          "url": "Tips_and_Tricks"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Hidden Treasure",
+          "url": "Hidden_Treasure"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Endings",
+          "url": "Endings"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Monster Hunts",
+          "url": "Monster_Hunts"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Gwent Card Game",
+          "url": "Gwent_Card_Game"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Runewright",
+          "url": "Runewright"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Enemies",
+          "url": "Enemies"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Big Choices and Consequences",
+          "url": "Big_Choices_and_Consequences"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "PC Console Commands and Cheats",
+          "url": "PC_Console_Commands_and_Cheats"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Secret Treasure",
+          "url": "Secret_Treasure"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Places of Power",
+          "url": "Places_of_Power"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Alchemy",
+          "url": "Alchemy"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Crafting",
+          "url": "Crafting"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Upgrades",
+          "url": "Upgrades"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "DLC and Expansion Packs",
+          "url": "DLC_and_Expansion_Packs"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Collector's Editions",
+          "url": "Collector%27s_Editions"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Importing Save Files",
+          "url": "Importing_Save_Files"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Universe",
+          "url": "Universe"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Achievements and Trophies",
+          "url": "Achievements_and_Trophies"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Witcher 3 Next Gen Update Release Time and Details",
+          "url": "Witcher_3_Next_Gen_Update_Release_Time_and_Details"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "The Witcher 3: Wild Hunt Patch 4.04 Notes",
+          "url": "The_Witcher_3:_Wild_Hunt_Patch_4.04_Notes"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Biggest Changes in the Next-Gen Update",
+          "url": "Biggest_Changes_in_the_Next-Gen_Update"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "The Witcher 3 Complete Edition Mods List",
+          "url": "The_Witcher_3_Complete_Edition_Mods_List"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "PC Mods",
+          "url": "PC_Mods"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Quick Sign Casting",
+          "url": "Quick_Sign_Casting"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "How to Use Photo Mode",
+          "url": "How_to_Use_Photo_Mode"
+        },
+        {
+          "__typename": "WikiNavigation",
+          "label": "Witcher 3 and Cyberpunk 2077 Easter Egg",
+          "url": "Witcher_3_and_Cyberpunk_2077_Easter_Egg"
+        }
+      ],
+      "PageMetadata": {
+        "title": "How long is The Witcher 3: Wild Hunt? | HowLongToBeat",
+        "image": "https://howlongtobeat.com/games/10270_The_Witcher_3_Wild_Hunt.jpg",
+        "description": "How long is The Witcher 3: Wild Hunt? HowLongToBeat has the answer. Create a backlog, submit your game times and compete with your friends!",
+        "canonical": "/game/10270",
+        "template": "game"
+      }
+    }
+  },
+  "Page": "/game/[gameId]",
+  "Query": {
+    "gameId": "10270"
+  }
+}
