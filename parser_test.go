@@ -1,0 +1,152 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2023. Edgar Schmidt
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ * disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package howlongtobeat
+
+import (
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"strings"
+	"testing"
+)
+
+func Test_jsonParser(t *testing.T) {
+	jsonFile, err := os.Open("test_files/test_json_parser.json")
+	if err != nil {
+		t.Fatalf("error opening JSON test file: %v", err)
+	}
+	defer jsonFile.Close()
+
+	mockData, err := io.ReadAll(jsonFile)
+	if err != nil {
+		t.Fatalf("error reading JSON test file: %v", err)
+	}
+
+	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(mockData)
+	}))
+	defer rs.Close()
+
+	resp, err := http.Get(rs.URL)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	mockClient := &Client{}
+	dest := SearchGame{}
+	parseFunc := mockClient.jsonParser(&dest)
+
+	if err = parseFunc(resp); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if dest.Data[0].GameName != "The Witcher 3: Wild Hunt" {
+		t.Fatalf("unexpected game name: %v", dest.Data[0].GameName)
+	}
+
+	if dest.Data[0].GameID != 10270 {
+		t.Fatalf("unexpected game id: %v", dest.Data[0].GameID)
+	}
+
+}
+
+func Test_htmlParserByID(t *testing.T) {
+	htmlFile, err := os.Open("test_files/test_html_parser.html")
+	if err != nil {
+		t.Fatalf("error opening HTML test file: %v", err)
+	}
+	defer htmlFile.Close()
+
+	mockData, err := io.ReadAll(htmlFile)
+	if err != nil {
+		t.Fatalf("error reading HTML test file: %v", err)
+	}
+
+	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(mockData)
+	}))
+	defer rs.Close()
+
+	resp, err := http.Get(rs.URL)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	dest := gameDetailsResponse{}
+	mockClient := &Client{}
+	parseFunc := mockClient.htmlParserByID(&dest, "__NEXT_DATA__")
+
+	if err = parseFunc(resp); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if dest.Props.PageProps.Game.Data.Game[0].GameID != 10270 {
+		t.Fatalf("unexpected game id: %v", dest.Props.PageProps.Game.Data.Game[0].GameID)
+	}
+}
+
+func Test_parseHTML_InvalidID(t *testing.T) {
+	htmlFile, err := os.Open("test_files/test_html_parser_invalid_id.html")
+	if err != nil {
+		t.Fatalf("error opening HTML test file: %v", err)
+	}
+	defer htmlFile.Close()
+
+	mockData, err := io.ReadAll(htmlFile)
+	if err != nil {
+		t.Fatalf("error reading HTML test file: %v", err)
+	}
+
+	dest := gameDetailsResponse{}
+	mockClient := &Client{}
+	err = mockClient.parseHTML(mockData, "nonExistingID", &dest)
+	if strings.Compare(err.Error(), "element not found") != 0 {
+		t.Fatal("expected error, got nil")
+	}
+}
+
+func Test_parseHTML_EmptyElement(t *testing.T) {
+	htmlFile, err := os.Open("test_files/test_html_parser_empty.html")
+	if err != nil {
+		t.Fatalf("error opening HTML test file: %v", err)
+	}
+	defer htmlFile.Close()
+
+	mockData, err := io.ReadAll(htmlFile)
+	if err != nil {
+		t.Fatalf("error reading HTML test file: %v", err)
+	}
+
+	mockClient := &Client{}
+	err = mockClient.parseHTML(mockData, "__NEXT_DATA__", nil)
+	if strings.Compare(err.Error(), "element first child not found") != 0 {
+		t.Fatalf("expected error, got %v", err)
+	}
+}
