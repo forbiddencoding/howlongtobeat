@@ -310,7 +310,7 @@ func (c *Client) Detail(ctx context.Context, gameID int) (*GameDetails, error) {
 
 	var response gameDetailsResponse
 
-	if err = c.do(ctx, req, c.htmlParserByID(&response, "__NEXT_DATA__")); err != nil {
+	if err = c.do(ctx, req, c.htmlScriptDataParserByID(&response, "__NEXT_DATA__")); err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to execute game details request: %s.", err))
 	}
 
