@@ -32,8 +32,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/net/html"
-	"io"
 	"net/http"
 )
 
@@ -43,19 +41,6 @@ type parseResponseFunc func(resp *http.Response) error
 func (c *Client) jsonParser(val any) parseResponseFunc {
 	return func(resp *http.Response) error {
 		return json.NewDecoder(resp.Body).Decode(val)
-	}
-}
-
-// htmlParserByID returns a function that will parse the HTML body of an http.Response, and unmarshal the JSON found
-// in the first child of the element with the provided ID into the provided struct.
-func (c *Client) htmlParserByID(val any, ID string) parseResponseFunc {
-	return func(resp *http.Response) error {
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
-
-		return c.parseHTML(body, ID, val)
 	}
 }
 
@@ -107,66 +92,4 @@ func (c *Client) htmlScriptDataParserByID(val any, ID string) parseResponseFunc 
 
 		return json.Unmarshal(data, &val)
 	}
-}
-
-// parseHTML reads the HTML from the provided bytes, finds the first element with the provided ID,
-// and unmarshal the JSON found in its first child into the provided struct.
-func (c *Client) parseHTML(body []byte, ID string, val any) error {
-	document, err := html.Parse(io.NopCloser(bytes.NewReader(body)))
-	if err != nil {
-		return err
-	}
-
-	element := c.getElementByID(document, ID)
-	if element == nil || element.Data == "" {
-		return errors.New("element not found")
-	}
-
-	if element.FirstChild == nil || element.FirstChild.Data == "" {
-		return errors.New("element first child not found")
-	}
-
-	return json.Unmarshal([]byte(element.FirstChild.Data), &val)
-}
-
-func (c *Client) getAttribute(n *html.Node, key string) (string, bool) {
-	for _, attr := range n.Attr {
-		if attr.Key == key {
-			return attr.Val, true
-		}
-	}
-
-	return "", false
-}
-
-func (c *Client) checkID(n *html.Node, id string) bool {
-	if n.Type == html.ElementNode {
-		s, ok := c.getAttribute(n, "id")
-
-		if ok && s == id {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (c *Client) traverseTree(n *html.Node, id string) *html.Node {
-	if c.checkID(n, id) {
-		return n
-	}
-
-	for child := n.FirstChild; child != nil; child = child.NextSibling {
-		res := c.traverseTree(child, id)
-
-		if res != nil {
-			return res
-		}
-	}
-
-	return nil
-}
-
-func (c *Client) getElementByID(n *html.Node, id string) *html.Node {
-	return c.traverseTree(n, id)
 }
