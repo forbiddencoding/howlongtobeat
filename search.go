@@ -191,8 +191,9 @@ func (c *Client) normalizePaginationValue(value, defaultVal int) int {
 	return value
 }
 
-func (c *Client) searchHTTPRequest(body []byte) (*http.Request, error) {
-	req, err := http.NewRequest(
+func (c *Client) searchHTTPRequest(ctx context.Context, body []byte) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(
+		ctx,
 		http.MethodPost,
 		hltbSearchURL,
 		bytes.NewBuffer(body),
@@ -235,14 +236,14 @@ func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier S
 		return nil, err
 	}
 
-	req, err := c.searchHTTPRequest(body)
+	req, err := c.searchHTTPRequest(ctx, body)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create search request: %s.", err))
 	}
 
 	var resp SearchGame
 
-	if err = c.do(ctx, req, c.jsonParser(&resp)); err != nil {
+	if err = c.do(req, c.jsonParser(&resp)); err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to search: %s.", err))
 	}
 

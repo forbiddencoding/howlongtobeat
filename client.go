@@ -27,7 +27,6 @@
 package howlongtobeat
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -104,9 +103,7 @@ func New(options ...Option) (*Client, error) {
 }
 
 // do performs the given request and parses the response with the provided parser.
-func (c *Client) do(ctx context.Context, req *http.Request, parser parseResponseFunc) (err error) {
-	req = req.WithContext(ctx)
-
+func (c *Client) do(req *http.Request, parser parseResponseFunc) (err error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err

@@ -195,7 +195,7 @@ func Test_searchHTTPRequest(t *testing.T) {
 		mockClient = &Client{}
 	)
 
-	req, err := mockClient.searchHTTPRequest(body)
+	req, err := mockClient.searchHTTPRequest(context.Background(), body)
 	if err != nil {
 		t.Errorf("searchHTTPRequest() error = %v", err)
 	}

@@ -27,7 +27,6 @@
 package howlongtobeat
 
 import (
-	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -148,7 +147,7 @@ func Test_do(t *testing.T) {
 		client: mockClient,
 	}
 
-	err = c.do(context.Background(), req, responseParser)
+	err = c.do(req, responseParser)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -186,7 +185,7 @@ func Test_do_Invalid_Status(t *testing.T) {
 		client: mockClient,
 	}
 
-	err = c.do(context.Background(), req, responseParser)
+	err = c.do(req, responseParser)
 	if strings.Compare(err.Error(), "unexpected status code: 500") != 0 {
 		t.Fatalf("unexpected error: %v", err)
 	}

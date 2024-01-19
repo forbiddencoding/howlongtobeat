@@ -54,7 +54,7 @@ func Test_detailHTTPRequest(t *testing.T) {
 		mockClient = &Client{}
 	)
 
-	req, err := mockClient.detailHTTPRequest(gameID)
+	req, err := mockClient.detailHTTPRequest(context.Background(), gameID)
 	if err != nil {
 		t.Fatalf("received error from detailHTTPRequest(): %s", err.Error())
 	}

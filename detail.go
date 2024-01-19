@@ -275,8 +275,13 @@ type (
 	}
 )
 
-func (c *Client) detailHTTPRequest(gameID int) (*http.Request, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%d", hltbGameURL, gameID), nil)
+func (c *Client) detailHTTPRequest(ctx context.Context, gameID int) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		fmt.Sprintf("%s/%d", hltbGameURL, gameID),
+		nil,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -303,14 +308,14 @@ func (c *Client) Detail(ctx context.Context, gameID int) (*GameDetails, error) {
 		return nil, errors.New("gameID is required")
 	}
 
-	req, err := c.detailHTTPRequest(gameID)
+	req, err := c.detailHTTPRequest(ctx, gameID)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create game details request: %s.", err))
 	}
 
 	var response gameDetailsResponse
 
-	if err = c.do(ctx, req, c.htmlScriptDataParserByID(&response, "__NEXT_DATA__")); err != nil {
+	if err = c.do(req, c.htmlScriptDataParserByID(&response, "__NEXT_DATA__")); err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to execute game details request: %s.", err))
 	}
 
