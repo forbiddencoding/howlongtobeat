@@ -32,6 +32,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -44,6 +45,7 @@ func (c *Client) jsonParser(val any) parseResponseFunc {
 	}
 }
 
+// Deprecated: Use nextDataParser instead
 func (c *Client) htmlScriptDataParserByID(val any, ID string) parseResponseFunc {
 	return func(resp *http.Response) error {
 		startTag := []byte(fmt.Sprintf(`<script id="%s" type="application/json">`, ID))
@@ -91,5 +93,22 @@ func (c *Client) htmlScriptDataParserByID(val any, ID string) parseResponseFunc 
 		}
 
 		return json.Unmarshal(data, &val)
+	}
+}
+
+func (c *Client) nextDataParser(val any) parseResponseFunc {
+	return func(resp *http.Response) error {
+		startTag := []byte(`<script id="__NEXT_DATA__" type="application/json">`)
+		endTag := []byte(`</script>`)
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+
+		start := bytes.Index(body, startTag)
+		end := bytes.Index(body[start:], endTag)
+
+		return json.Unmarshal(body[start+len(startTag):start+end], &val)
 	}
 }

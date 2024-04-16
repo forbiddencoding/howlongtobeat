@@ -315,7 +315,7 @@ func (c *Client) Detail(ctx context.Context, gameID int) (*GameDetails, error) {
 
 	var response gameDetailsResponse
 
-	if err = c.do(req, c.htmlScriptDataParserByID(&response, "__NEXT_DATA__")); err != nil {
+	if err = c.do(req, c.nextDataParser(&response)); err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to execute game details request: %s.", err))
 	}
 
