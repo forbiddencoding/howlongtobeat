@@ -34,6 +34,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 )
 
 type parseResponseFunc func(resp *http.Response) error
@@ -110,5 +111,44 @@ func (c *Client) nextDataParser(val any) parseResponseFunc {
 		end := bytes.Index(body[start:], endTag)
 
 		return json.Unmarshal(body[start+len(startTag):start+end], &val)
+	}
+}
+
+func (c *Client) scriptParser(apiData *ApiData) parseResponseFunc {
+	return func(resp *http.Response) error {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+
+		reg := regexp.MustCompile(`(?i)<script[^>]*src=["']([^"']*_app-[^"']*\.js)["'][^>]*>`)
+		matches := reg.FindSubmatch(body)
+
+		if len(matches) == 0 {
+			return errors.New("script src path not found")
+		}
+
+		apiData.scriptPath = string(matches[1])
+
+		return nil
+	}
+}
+
+func (c *Client) endpointParser(apiData *ApiData) parseResponseFunc {
+	return func(resp *http.Response) error {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+
+		reg := regexp.MustCompile(`fetch\(\s*["']/api/locate/["']\.concat\(["']([0-9a-fA-F]+)["']\)\.concat\(["']([0-9a-fA-F]+)["']\)`)
+		matches := reg.FindSubmatch(body)
+		if len(matches) != 3 {
+			return errors.New("endpoint path not found")
+		}
+
+		apiData.endpointPath = string(matches[1]) + string(matches[2])
+
+		return nil
 	}
 }

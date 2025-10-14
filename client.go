@@ -35,8 +35,10 @@ import (
 )
 
 const (
+	// hltbBaseURL is the base URL for the HowLongToBeat.
+	hltbBaseURL = "https://howlongtobeat.com"
 	// hltbSearchURL is the base URL for the HowLongToBeat search API.
-	hltbSearchURL = "https://howlongtobeat.com/api/search"
+	hltbSearchURL = "https://howlongtobeat.com/api/locate"
 	// hltbGameURL is the base URL for the HowLongToBeat game API.
 	hltbGameURL = "https://howlongtobeat.com/game"
 	// defaultRequestTimeout is the default timeout for outgoing requests, we wait up to 30 seconds.
@@ -48,6 +50,7 @@ type (
 		client  *http.Client
 		logger  *log.Logger
 		timeout time.Duration
+		apiData *ApiData
 	}
 
 	// Option is a type alias for functions to configure your Client.
@@ -90,6 +93,7 @@ func New(options ...Option) (*Client, error) {
 			Timeout: defaultRequestTimeout,
 		},
 		timeout: defaultRequestTimeout,
+		apiData: &ApiData{},
 	}
 
 	// Apply options
