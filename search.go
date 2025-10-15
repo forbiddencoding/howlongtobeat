@@ -193,7 +193,7 @@ func (c *Client) normalizePaginationValue(value, defaultVal int) int {
 	return value
 }
 
-func (c *Client) searchHTTPRequest(endpoint string, ctx context.Context, body []byte) (*http.Request, error) {
+func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
@@ -231,7 +231,7 @@ func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier S
 		return nil, errors.New("search term cannot be empty")
 	}
 
-	apiData, err := c.getApiData()
+	apiData, err := c.getApiData(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -243,7 +243,7 @@ func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier S
 		return nil, err
 	}
 
-	req, err := c.searchHTTPRequest(apiData.endpointPath, ctx, body)
+	req, err := c.searchHTTPRequest(ctx, body, apiData.endpointPath)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create search request: %s.", err))
 	}

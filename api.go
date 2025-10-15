@@ -35,7 +35,7 @@ func (c *Client) scriptPathHTTPRequest(ctx context.Context) (*http.Request, erro
 	return req, nil
 }
 
-func (c *Client) endpointPathHTTPRequest(path string, ctx context.Context) (*http.Request, error) {
+func (c *Client) endpointPathHTTPRequest(ctx context.Context, path string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodGet,
@@ -51,14 +51,14 @@ func (c *Client) endpointPathHTTPRequest(path string, ctx context.Context) (*htt
 	return req, nil
 }
 
-func (c *Client) getApiData() (*ApiData, error) {
+func (c *Client) getApiData(ctx context.Context) (*ApiData, error) {
 	if c.apiData.endpointPath != "" {
 		return c.apiData, nil
 	}
 
 	apiData := &ApiData{}
 
-	req, err := c.scriptPathHTTPRequest(context.Background())
+	req, err := c.scriptPathHTTPRequest(ctx)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create script path request: %s.", err))
 	}
@@ -67,7 +67,7 @@ func (c *Client) getApiData() (*ApiData, error) {
 		return nil, errors.New(fmt.Sprintf("failed to fetch script path: %s.", err))
 	}
 
-	req, err = c.endpointPathHTTPRequest(apiData.scriptPath, context.Background())
+	req, err = c.endpointPathHTTPRequest(ctx, apiData.scriptPath)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create endpoint request: %s.", err))
 	}
