@@ -104,9 +104,10 @@ type (
 	}
 
 	searchRequestOptionsGamesGameplay struct {
-		Perspective string `json:"perspective,omitempty"`
-		Flow        string `json:"flow,omitempty"`
-		Genre       string `json:"genre,omitempty"`
+		Difficulty  string `json:"difficulty"`
+		Flow        string `json:"flow"`
+		Genre       string `json:"genre"`
+		Perspective string `json:"perspective"`
 	}
 
 	searchRequestOptionsGames struct {
@@ -115,7 +116,7 @@ type (
 		SortCategory  string                             `json:"sortCategory,omitempty"`
 		RangeCategory string                             `json:"rangeCategory,omitempty"`
 		RangeTime     searchRequestOptionsGamesRangeTime `json:"rangeTime"`
-		Gameplay      *searchRequestOptionsGamesGameplay `json:"gameplay,omitempty"`
+		Gameplay      searchRequestOptionsGamesGameplay  `json:"gameplay"`
 		Modifier      SearchModifier                     `json:"modifier,omitempty"`
 	}
 
@@ -158,6 +159,7 @@ func (c *Client) prepSearchRequest(searchTerm string, searchModifier SearchModif
 			Games: searchRequestOptionsGames{
 				SortCategory:  "popular",
 				RangeCategory: "main",
+				Gameplay:      searchRequestOptionsGamesGameplay{},
 				RangeTime: searchRequestOptionsGamesRangeTime{
 					Min: 0,
 					Max: 0,
@@ -191,11 +193,11 @@ func (c *Client) normalizePaginationValue(value, defaultVal int) int {
 	return value
 }
 
-func (c *Client) searchHTTPRequest(ctx context.Context, body []byte) (*http.Request, error) {
+func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		hltbSearchURL,
+		hltbSearchURL+"/"+endpoint,
 		bytes.NewBuffer(body),
 	)
 	if err != nil {
@@ -229,6 +231,11 @@ func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier S
 		return nil, errors.New("search term cannot be empty")
 	}
 
+	apiData, err := c.getApiData(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	requestBody := c.prepSearchRequest(searchTerm, searchModifier, pagination)
 
 	body, err := json.Marshal(requestBody)
@@ -236,7 +243,7 @@ func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier S
 		return nil, err
 	}
 
-	req, err := c.searchHTTPRequest(ctx, body)
+	req, err := c.searchHTTPRequest(ctx, body, apiData.endpointPath)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create search request: %s.", err))
 	}

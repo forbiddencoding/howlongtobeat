@@ -210,3 +210,75 @@ func Benchmark_nextDataParser(b *testing.B) {
 		b.Fatalf("unexpected error: %v", err)
 	}
 }
+
+func Test_scriptPathParser(t *testing.T) {
+	htmlFile, err := os.Open("test_files/test_html_parser.html")
+	if err != nil {
+		t.Fatalf("error opening HTML test file: %v", err)
+	}
+	defer htmlFile.Close()
+
+	mockData, err := io.ReadAll(htmlFile)
+	if err != nil {
+		t.Fatalf("error reading HTML test file: %v", err)
+	}
+
+	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(mockData)
+	}))
+	defer rs.Close()
+
+	resp, err := http.Get(rs.URL)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	apiData := ApiData{}
+	mockClient := &Client{}
+	parseFunc := mockClient.scriptParser(&apiData)
+
+	if err = parseFunc(resp); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if apiData.scriptPath != "/_next/static/chunks/pages/_app-44bcaedff742b1cc.js" {
+		t.Fatalf("unexpected script path: %v", apiData.scriptPath)
+	}
+}
+
+func Test_endpointParser(t *testing.T) {
+	jsFile, err := os.Open("test_files/test_endpoint_parser.js")
+	if err != nil {
+		t.Fatalf("error opening JS test file: %v", err)
+	}
+	defer jsFile.Close()
+
+	mockData, err := io.ReadAll(jsFile)
+	if err != nil {
+		t.Fatalf("error reading JS test file: %v", err)
+	}
+
+	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(mockData)
+	}))
+	defer rs.Close()
+
+	resp, err := http.Get(rs.URL)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	apiData := ApiData{}
+	mockClient := &Client{}
+	parseFunc := mockClient.endpointParser(&apiData)
+
+	if err = parseFunc(resp); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if apiData.endpointPath != "5d6cf2e5eb308ba8" {
+		t.Fatalf("unexpected endpoint path: %v", apiData.endpointPath)
+	}
+}
