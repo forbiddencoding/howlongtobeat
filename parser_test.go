@@ -256,7 +256,7 @@ func Test_endpointParser(t *testing.T) {
 
 	mockData, err := io.ReadAll(jsFile)
 	if err != nil {
-		t.Fatalf("error reading HTML test file: %v", err)
+		t.Fatalf("error reading JS test file: %v", err)
 	}
 
 	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
