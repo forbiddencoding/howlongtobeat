@@ -193,11 +193,11 @@ func (c *Client) normalizePaginationValue(value, defaultVal int) int {
 	return value
 }
 
-func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint string) (*http.Request, error) {
+func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint, token string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		hltbSearchURL+"/"+endpoint,
+		hltbBaseURL+"/"+endpoint,
 		bytes.NewBuffer(body),
 	)
 	if err != nil {
@@ -218,6 +218,7 @@ func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint st
 	req.Header.Set(http.CanonicalHeaderKey("Sec-Fetch-Mode"), "cors")
 	req.Header.Set(http.CanonicalHeaderKey("Sec-Fetch-Dest"), "empty")
 	req.Header.Set(http.CanonicalHeaderKey("Dnt"), "1")
+	req.Header.Set(http.CanonicalHeaderKey("x-auth-token"), token)
 
 	return req, nil
 }
@@ -243,7 +244,7 @@ func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier S
 		return nil, err
 	}
 
-	req, err := c.searchHTTPRequest(ctx, body, apiData.endpointPath)
+	req, err := c.searchHTTPRequest(ctx, body, apiData.endpointPath, apiData.token)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create search request: %s.", err))
 	}

@@ -5,9 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type ApiData struct {
+	token        string
 	scriptPath   string
 	endpointPath string
 }
@@ -17,6 +19,22 @@ func (c *Client) setDefaultRequestHeaders(req *http.Request) {
 	req.Header.Set(http.CanonicalHeaderKey("User-Agent"), "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
 	req.Header.Set(http.CanonicalHeaderKey("Origin"), "https://howlongtobeat.com/")
 	req.Header.Set(http.CanonicalHeaderKey("Referer"), "https://howlongtobeat.com/")
+}
+
+func (c *Client) tokenHTTPRequest(ctx context.Context) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		hltbTokenURL+"?t="+time.Now().Format(time.RFC3339Nano),
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	c.setDefaultRequestHeaders(req)
+
+	return req, nil
 }
 
 func (c *Client) scriptPathHTTPRequest(ctx context.Context) (*http.Request, error) {
@@ -52,13 +70,22 @@ func (c *Client) endpointPathHTTPRequest(ctx context.Context, path string) (*htt
 }
 
 func (c *Client) getApiData(ctx context.Context) (*ApiData, error) {
-	if c.apiData.endpointPath != "" {
+	if c.apiData != nil {
 		return c.apiData, nil
 	}
 
 	apiData := &ApiData{}
 
-	req, err := c.scriptPathHTTPRequest(ctx)
+	req, err := c.tokenHTTPRequest(ctx)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to create token request: %s.", err))
+	}
+
+	if err = c.do(req, c.tokenParser(apiData)); err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to fetch token: %s.", err))
+	}
+
+	req, err = c.scriptPathHTTPRequest(ctx)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create script path request: %s.", err))
 	}

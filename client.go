@@ -37,8 +37,8 @@ import (
 const (
 	// hltbBaseURL is the base URL for the HowLongToBeat.
 	hltbBaseURL = "https://howlongtobeat.com"
-	// hltbSearchURL is the base URL for the HowLongToBeat search API.
-	hltbSearchURL = "https://howlongtobeat.com/api/locate"
+	// hltbTokenURL is the URL to retrieve the token for the HowLongToBeat API.
+	hltbTokenURL = "https://howlongtobeat.com/api/search/init"
 	// hltbGameURL is the base URL for the HowLongToBeat game API.
 	hltbGameURL = "https://howlongtobeat.com/game"
 	// defaultRequestTimeout is the default timeout for outgoing requests, we wait up to 30 seconds.
@@ -93,7 +93,6 @@ func New(options ...Option) (*Client, error) {
 			Timeout: defaultRequestTimeout,
 		},
 		timeout: defaultRequestTimeout,
-		apiData: &ApiData{},
 	}
 
 	// Apply options

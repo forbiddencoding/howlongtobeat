@@ -278,7 +278,8 @@ func Test_endpointParser(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if apiData.endpointPath != "5d6cf2e5eb308ba8" {
-		t.Fatalf("unexpected endpoint path: %v", apiData.endpointPath)
+	expectedPath := "/api/search"
+	if apiData.endpointPath != expectedPath {
+		t.Fatalf("unexpected endpoint path: %s, expected: %s", apiData.endpointPath, expectedPath)
 	}
 }
