@@ -122,14 +122,17 @@ func (c *Client) scriptParser(apiData *ApiData) parseResponseFunc {
 			return err
 		}
 
-		reg := regexp.MustCompile(`(?i)<script[^>]*src=["']([^"']*_app-[^"']*\.js)["'][^>]*>`)
-		matches := reg.FindSubmatch(body)
+		reg := regexp.MustCompile(`(?i)<script[^>]*src=["']([^"']*/_next/static/chunks/[^"']*\.js)["'][^>]*>`)
+		matches := reg.FindAllSubmatch(body, -1)
 
 		if len(matches) == 0 {
 			return errors.New("script src path not found")
 		}
 
-		apiData.scriptPath = string(matches[1])
+		apiData.scriptPaths = make([]string, len(matches))
+		for i, match := range matches {
+			apiData.scriptPaths[i] = string(match[1])
+		}
 
 		return nil
 	}

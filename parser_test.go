@@ -242,8 +242,8 @@ func Test_scriptPathParser(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if apiData.scriptPath != "/_next/static/chunks/pages/_app-44bcaedff742b1cc.js" {
-		t.Fatalf("unexpected script path: %v", apiData.scriptPath)
+	if len(apiData.scriptPaths) != 14 {
+		t.Fatalf("unexpected script path: %v", apiData.scriptPaths)
 	}
 }
 

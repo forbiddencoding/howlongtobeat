@@ -10,7 +10,7 @@ import (
 
 type ApiData struct {
 	token        string
-	scriptPath   string
+	scriptPaths  []string
 	endpointPath string
 }
 
@@ -94,13 +94,23 @@ func (c *Client) getApiData(ctx context.Context) (*ApiData, error) {
 		return nil, errors.New(fmt.Sprintf("failed to fetch script path: %s.", err))
 	}
 
-	req, err = c.endpointPathHTTPRequest(ctx, apiData.scriptPath)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to create endpoint request: %s.", err))
+	for _, scriptPath := range apiData.scriptPaths {
+		req, err = c.endpointPathHTTPRequest(ctx, scriptPath)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to create endpoint request: %s.", err))
+		}
+
+		if err = c.do(req, c.endpointParser(apiData)); err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to fetch endpoint: %s.", err))
+		}
+
+		if apiData.endpointPath != "" {
+			break
+		}
 	}
 
-	if err = c.do(req, c.endpointParser(apiData)); err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to fetch endpoint: %s.", err))
+	if apiData.endpointPath == "" {
+		return nil, errors.New("failed to find endpoint path")
 	}
 
 	c.apiData = apiData
