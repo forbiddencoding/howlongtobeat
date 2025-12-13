@@ -69,11 +69,10 @@ func (c *Client) endpointPathHTTPRequest(ctx context.Context, path string) (*htt
 	return req, nil
 }
 
-func (c *Client) getApiData(ctx context.Context) (*ApiData, error) {
-	if c.apiData != nil {
-		return c.apiData, nil
-	}
-
+// getApiDataWithEndpointSearch
+// Method parses the request token and tries to search js scripts and then
+// find the endpointPath in one of these scripts.
+func (c *Client) getApiDataWithEndpointSearch(ctx context.Context) (*ApiData, error) {
 	apiData := &ApiData{}
 
 	req, err := c.tokenHTTPRequest(ctx)
@@ -111,6 +110,51 @@ func (c *Client) getApiData(ctx context.Context) (*ApiData, error) {
 
 	if apiData.endpointPath == "" {
 		return nil, errors.New("failed to find endpoint path")
+	}
+
+	return apiData, nil
+}
+
+// getApiDataWithDefaultEndpoint
+// Method parses the request token and sets the default endpointPath.
+func (c *Client) getApiDataWithDefaultEndpoint(ctx context.Context) (*ApiData, error) {
+	apiData := &ApiData{}
+
+	req, err := c.tokenHTTPRequest(ctx)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to create token request: %s.", err))
+	}
+
+	if err = c.do(req, c.tokenParser(apiData)); err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to fetch token: %s.", err))
+	}
+
+	apiData.endpointPath = hltbSearchEndpoint
+
+	return apiData, nil
+}
+
+// getApiData
+// Search flag indicates which getApi method we should use.
+// If true, the method uses getApi method with endpoint search, otherwise
+// it uses the default endpoint.
+func (c *Client) getApiData(ctx context.Context, search bool) (*ApiData, error) {
+	if c.apiData != nil {
+		return c.apiData, nil
+	}
+
+	var (
+		apiData *ApiData
+		err     error
+	)
+	if search {
+		apiData, err = c.getApiDataWithEndpointSearch(ctx)
+	} else {
+		apiData, err = c.getApiDataWithDefaultEndpoint(ctx)
+	}
+
+	if err != nil {
+		return nil, err
 	}
 
 	c.apiData = apiData

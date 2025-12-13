@@ -37,6 +37,8 @@ import (
 const (
 	// hltbBaseURL is the base URL for the HowLongToBeat.
 	hltbBaseURL = "https://howlongtobeat.com"
+	// hltbSearchEndpoint is the default endpoint for the HowLongToBeat search API.
+	hltbSearchEndpoint = "/api/search"
 	// hltbTokenURL is the URL to retrieve the token for the HowLongToBeat API.
 	hltbTokenURL = "https://howlongtobeat.com/api/search/init"
 	// hltbGameURL is the base URL for the HowLongToBeat game API.

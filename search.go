@@ -139,6 +139,11 @@ type (
 		Size          int                  `json:"size"`
 		SearchOptions searchRequestOptions `json:"searchOptions"`
 	}
+
+	SearchOptions struct {
+		Pagination *SearchGamePagination
+		Search     bool
+	}
 )
 
 type SearchModifier string
@@ -226,18 +231,25 @@ func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint, t
 // Search searches for games on HowLongToBeat.
 // SearchTerm is typically the title of the game or DLC.
 // SearchModifier can be used to filter the results by either excluding or including games and DLCs.
-// Pagination is optional, but recommended. The default page size is 20.
-func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier SearchModifier, pagination *SearchGamePagination) (*SearchGame, error) {
+// SearchOptions.Pagination is optional, but recommended. The default page size is 20.
+func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier SearchModifier, options *SearchOptions) (*SearchGame, error) {
 	if searchTerm == "" {
 		return nil, errors.New("search term cannot be empty")
 	}
 
-	apiData, err := c.getApiData(ctx)
+	if options == nil {
+		options = &SearchOptions{
+			Pagination: nil,
+			Search:     true,
+		}
+	}
+
+	apiData, err := c.getApiData(ctx, options.Search)
 	if err != nil {
 		return nil, err
 	}
 
-	requestBody := c.prepSearchRequest(searchTerm, searchModifier, pagination)
+	requestBody := c.prepSearchRequest(searchTerm, searchModifier, options.Pagination)
 
 	body, err := json.Marshal(requestBody)
 	if err != nil {
