@@ -87,9 +87,9 @@ type (
 		Title       string           `json:"title"`
 		Category    string           `json:"category"`
 		Count       int              `json:"count"`
-		PageCurrent int              `json:"page_current"`
-		PageTotal   int              `json:"page_total"`
-		PageSize    int              `json:"page_size"`
+		PageCurrent int              `json:"pageCurrent"`
+		PageTotal   int              `json:"pageTotal"`
+		PageSize    int              `json:"pageSize"`
 		Data        []SearchGameData `json:"data"`
 	}
 
