@@ -35,6 +35,7 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 type parseResponseFunc func(resp *http.Response) error
@@ -121,14 +122,34 @@ func (c *Client) scriptParser(apiData *ApiData) parseResponseFunc {
 			return err
 		}
 
-		reg := regexp.MustCompile(`(?i)<script[^>]*src=["']([^"']*_app-[^"']*\.js)["'][^>]*>`)
-		matches := reg.FindSubmatch(body)
+		reg := regexp.MustCompile(`(?i)<script[^>]*src=["']([^"']*/_next/static/chunks/[^"']*\.js)["'][^>]*>`)
+		matches := reg.FindAllSubmatch(body, -1)
 
 		if len(matches) == 0 {
 			return errors.New("script src path not found")
 		}
 
-		apiData.scriptPath = string(matches[1])
+		apiData.scriptPaths = make([]string, len(matches))
+		for i, match := range matches {
+			apiData.scriptPaths[i] = string(match[1])
+		}
+
+		return nil
+	}
+}
+
+type TokenResponse struct {
+	Token string `json:"token"`
+}
+
+func (c *Client) tokenParser(apiData *ApiData) parseResponseFunc {
+	return func(resp *http.Response) error {
+		var tokenResponse TokenResponse
+		if err := json.NewDecoder(resp.Body).Decode(&tokenResponse); err != nil {
+			return err
+		}
+
+		apiData.token = tokenResponse.Token
 
 		return nil
 	}
@@ -141,13 +162,21 @@ func (c *Client) endpointParser(apiData *ApiData) parseResponseFunc {
 			return err
 		}
 
-		reg := regexp.MustCompile(`fetch\(\s*["']/api/locate/["']\.concat\(["']([0-9a-fA-F]+)["']\)\.concat\(["']([0-9a-fA-F]+)["']\)`)
+		reg := regexp.MustCompile(`(?si)fetch\s*\(\s*["']/api/([a-zA-Z0-9_/]+)[^"']*["']\s*,\s*{[^}]*method:\s*["']POST["'][^}]*}`)
 		matches := reg.FindSubmatch(body)
-		if len(matches) != 3 {
+		if len(matches) < 2 {
 			return errors.New("endpoint path not found")
 		}
 
-		apiData.endpointPath = string(matches[1]) + string(matches[2])
+		var basePath string
+		pathSuffix := string(matches[1])
+		if strings.Contains(pathSuffix, "/") {
+			basePath = strings.Split(pathSuffix, "/")[0]
+		} else {
+			basePath = pathSuffix
+		}
+
+		apiData.endpointPath = "/api/" + basePath
 
 		return nil
 	}

@@ -242,8 +242,8 @@ func Test_scriptPathParser(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if apiData.scriptPath != "/_next/static/chunks/pages/_app-44bcaedff742b1cc.js" {
-		t.Fatalf("unexpected script path: %v", apiData.scriptPath)
+	if len(apiData.scriptPaths) != 14 {
+		t.Fatalf("unexpected script path: %v", apiData.scriptPaths)
 	}
 }
 
@@ -278,7 +278,8 @@ func Test_endpointParser(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if apiData.endpointPath != "5d6cf2e5eb308ba8" {
-		t.Fatalf("unexpected endpoint path: %v", apiData.endpointPath)
+	expectedPath := "/api/search"
+	if apiData.endpointPath != expectedPath {
+		t.Fatalf("unexpected endpoint path: %s, expected: %s", apiData.endpointPath, expectedPath)
 	}
 }

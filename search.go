@@ -87,9 +87,9 @@ type (
 		Title       string           `json:"title"`
 		Category    string           `json:"category"`
 		Count       int              `json:"count"`
-		PageCurrent int              `json:"page_current"`
-		PageTotal   int              `json:"page_total"`
-		PageSize    int              `json:"page_size"`
+		PageCurrent int              `json:"pageCurrent"`
+		PageTotal   int              `json:"pageTotal"`
+		PageSize    int              `json:"pageSize"`
 		Data        []SearchGameData `json:"data"`
 	}
 
@@ -138,6 +138,11 @@ type (
 		SearchPage    int                  `json:"searchPage"`
 		Size          int                  `json:"size"`
 		SearchOptions searchRequestOptions `json:"searchOptions"`
+	}
+
+	SearchOptions struct {
+		Pagination *SearchGamePagination
+		Search     bool
 	}
 )
 
@@ -193,11 +198,11 @@ func (c *Client) normalizePaginationValue(value, defaultVal int) int {
 	return value
 }
 
-func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint string) (*http.Request, error) {
+func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint, token string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		hltbSearchURL+"/"+endpoint,
+		hltbBaseURL+"/"+endpoint,
 		bytes.NewBuffer(body),
 	)
 	if err != nil {
@@ -218,6 +223,7 @@ func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint st
 	req.Header.Set(http.CanonicalHeaderKey("Sec-Fetch-Mode"), "cors")
 	req.Header.Set(http.CanonicalHeaderKey("Sec-Fetch-Dest"), "empty")
 	req.Header.Set(http.CanonicalHeaderKey("Dnt"), "1")
+	req.Header.Set(http.CanonicalHeaderKey("x-auth-token"), token)
 
 	return req, nil
 }
@@ -225,25 +231,32 @@ func (c *Client) searchHTTPRequest(ctx context.Context, body []byte, endpoint st
 // Search searches for games on HowLongToBeat.
 // SearchTerm is typically the title of the game or DLC.
 // SearchModifier can be used to filter the results by either excluding or including games and DLCs.
-// Pagination is optional, but recommended. The default page size is 20.
-func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier SearchModifier, pagination *SearchGamePagination) (*SearchGame, error) {
+// SearchOptions.Pagination is optional, but recommended. The default page size is 20.
+func (c *Client) Search(ctx context.Context, searchTerm string, searchModifier SearchModifier, options *SearchOptions) (*SearchGame, error) {
 	if searchTerm == "" {
 		return nil, errors.New("search term cannot be empty")
 	}
 
-	apiData, err := c.getApiData(ctx)
+	if options == nil {
+		options = &SearchOptions{
+			Pagination: nil,
+			Search:     true,
+		}
+	}
+
+	apiData, err := c.getApiData(ctx, options.Search)
 	if err != nil {
 		return nil, err
 	}
 
-	requestBody := c.prepSearchRequest(searchTerm, searchModifier, pagination)
+	requestBody := c.prepSearchRequest(searchTerm, searchModifier, options.Pagination)
 
 	body, err := json.Marshal(requestBody)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := c.searchHTTPRequest(ctx, body, apiData.endpointPath)
+	req, err := c.searchHTTPRequest(ctx, body, apiData.endpointPath, apiData.token)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to create search request: %s.", err))
 	}
