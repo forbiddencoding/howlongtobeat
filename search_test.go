@@ -99,7 +99,7 @@ func TestSearchModifierString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.sm.String(); got != tt.want {
+			if got := tt.sm; got != tt.want {
 				t.Errorf("SearchModifier.String() = %v, want %v", got, tt.want)
 			}
 		})

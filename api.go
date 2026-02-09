@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -25,14 +26,21 @@ func (c *Client) tokenHTTPRequest(ctx context.Context) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodGet,
-		hltbTokenURL+"?t="+time.Now().Format(time.RFC3339Nano),
+		hltbTokenURL,
 		nil,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	c.setDefaultRequestHeaders(req)
+	q := req.URL.Query()
+	q.Set("t", strconv.FormatInt(time.Now().UnixMilli(), 10))
+	req.URL.RawQuery = q.Encode()
+
+	req.Header.Set(http.CanonicalHeaderKey("User-Agent"), "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
+	req.Header.Set(http.CanonicalHeaderKey("Origin"), "https://howlongtobeat.com/")
+	req.Header.Set(http.CanonicalHeaderKey("Referer"), "https://howlongtobeat.com/")
+	req.Header.Set(http.CanonicalHeaderKey("Content-Type"), "application/json; charset=utf-8")
 
 	return req, nil
 }
@@ -143,16 +151,7 @@ func (c *Client) getApiData(ctx context.Context, search bool) (*ApiData, error) 
 		return c.apiData, nil
 	}
 
-	var (
-		apiData *ApiData
-		err     error
-	)
-	if search {
-		apiData, err = c.getApiDataWithEndpointSearch(ctx)
-	} else {
-		apiData, err = c.getApiDataWithDefaultEndpoint(ctx)
-	}
-
+	apiData, err := c.getApiDataWithDefaultEndpoint(ctx)
 	if err != nil {
 		return nil, err
 	}

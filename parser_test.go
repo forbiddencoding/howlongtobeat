@@ -75,42 +75,6 @@ func Test_jsonParser(t *testing.T) {
 
 }
 
-func Test_htmlScriptDataParserByID(t *testing.T) {
-	htmlFile, err := os.Open("test_files/test_html_parser.html")
-	if err != nil {
-		t.Fatalf("error opening HTML test file: %v", err)
-	}
-	defer htmlFile.Close()
-
-	mockData, err := io.ReadAll(htmlFile)
-	if err != nil {
-		t.Fatalf("error reading HTML test file: %v", err)
-	}
-
-	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write(mockData)
-	}))
-	defer rs.Close()
-
-	resp, err := http.Get(rs.URL)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	dest := gameDetailsResponse{}
-	mockClient := &Client{}
-	parseFunc := mockClient.htmlScriptDataParserByID(&dest, "__NEXT_DATA__")
-
-	if err = parseFunc(resp); err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	if dest.Props.PageProps.Game.Data.Game[0].GameID != 10270 {
-		t.Fatalf("unexpected game id: %v", dest.Props.PageProps.Game.Data.Game[0].GameID)
-	}
-}
-
 func Test_nextDataParser(t *testing.T) {
 	htmlFile, err := os.Open("test_files/test_html_parser.html")
 	if err != nil {
@@ -144,70 +108,6 @@ func Test_nextDataParser(t *testing.T) {
 
 	if dest.Props.PageProps.Game.Data.Game[0].GameID != 10270 {
 		t.Fatalf("unexpected game id: %v", dest.Props.PageProps.Game.Data.Game[0].GameID)
-	}
-}
-
-func Benchmark_htmlScriptDataParserByID(b *testing.B) {
-	htmlFile, err := os.Open("test_files/test_html_parser.html")
-	if err != nil {
-		b.Fatalf("error opening HTML test file: %v", err)
-	}
-	defer htmlFile.Close()
-
-	mockData, err := io.ReadAll(htmlFile)
-	if err != nil {
-		b.Fatalf("error reading HTML test file: %v", err)
-	}
-
-	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write(mockData)
-	}))
-	defer rs.Close()
-
-	resp, err := http.Get(rs.URL)
-	if err != nil {
-		b.Fatalf("unexpected error: %v", err)
-	}
-
-	dest := gameDetailsResponse{}
-	mockClient := &Client{}
-	parseFunc := mockClient.htmlScriptDataParserByID(&dest, "__NEXT_DATA__")
-
-	if err = parseFunc(resp); err != nil {
-		b.Fatalf("unexpected error: %v", err)
-	}
-}
-
-func Benchmark_nextDataParser(b *testing.B) {
-	htmlFile, err := os.Open("test_files/test_html_parser.html")
-	if err != nil {
-		b.Fatalf("error opening HTML test file: %v", err)
-	}
-	defer htmlFile.Close()
-
-	mockData, err := io.ReadAll(htmlFile)
-	if err != nil {
-		b.Fatalf("error reading HTML test file: %v", err)
-	}
-
-	rs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write(mockData)
-	}))
-	defer rs.Close()
-
-	resp, err := http.Get(rs.URL)
-	if err != nil {
-		b.Fatalf("unexpected error: %v", err)
-	}
-
-	dest := gameDetailsResponse{}
-	mockClient := &Client{}
-	parseFunc := mockClient.nextDataParser(&dest)
-
-	if err = parseFunc(resp); err != nil {
-		b.Fatalf("unexpected error: %v", err)
 	}
 }
 

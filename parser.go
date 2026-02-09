@@ -27,11 +27,9 @@
 package howlongtobeat
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -44,57 +42,6 @@ type parseResponseFunc func(resp *http.Response) error
 func (c *Client) jsonParser(val any) parseResponseFunc {
 	return func(resp *http.Response) error {
 		return json.NewDecoder(resp.Body).Decode(val)
-	}
-}
-
-// Deprecated: Use nextDataParser instead
-func (c *Client) htmlScriptDataParserByID(val any, ID string) parseResponseFunc {
-	return func(resp *http.Response) error {
-		startTag := []byte(fmt.Sprintf(`<script id="%s" type="application/json">`, ID))
-		endTag := []byte(`</script>`)
-
-		scanner := bufio.NewScanner(resp.Body)
-		scanner.Split(bufio.ScanLines)
-
-		var data []byte
-		startTagFound := false
-
-		for scanner.Scan() {
-			line := scanner.Bytes()
-
-			if !startTagFound {
-				startIndex := bytes.Index(line, startTag)
-				if startIndex != -1 {
-					startTagFound = true
-					// Adjust line to start at the beginning of JSON content, not at the start tag
-					line = line[startIndex+len(startTag):]
-				}
-			}
-
-			if startTagFound {
-				endIndex := bytes.Index(line, endTag)
-				if endIndex != -1 {
-					// Adjust line to end at the beginning of the end tag, not include the end tag
-					line = line[:endIndex]
-				}
-
-				data = append(data, line...)
-
-				if endIndex != -1 {
-					break
-				}
-			}
-		}
-
-		if err := scanner.Err(); err != nil {
-			return err
-		}
-
-		if !startTagFound {
-			return errors.New("start tag not found")
-		}
-
-		return json.Unmarshal(data, &val)
 	}
 }
 

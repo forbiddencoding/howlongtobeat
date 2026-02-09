@@ -146,17 +146,13 @@ type (
 	}
 )
 
-type SearchModifier string
+type SearchModifier = string
 
 const (
 	SearchModifierNone    SearchModifier = ""
 	SearchModifierOnlyDLC SearchModifier = "only_dlc"
 	SearchModifierHideDLC SearchModifier = "hide_dlc"
 )
-
-func (sm SearchModifier) String() string {
-	return string(sm)
-}
 
 func (c *Client) prepSearchRequest(searchTerm string, searchModifier SearchModifier, pagination *SearchGamePagination) *searchRequest {
 	requestBody := &searchRequest{
