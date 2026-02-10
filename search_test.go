@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 func Test_normalizePaginationValue(t *testing.T) {
@@ -196,7 +197,8 @@ func Test_searchHTTPRequest(t *testing.T) {
 }
 
 func Test_Search(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	mockClient, err := New()
 	if err != nil {
@@ -214,7 +216,9 @@ func Test_Search(t *testing.T) {
 }
 
 func Test_Search_NullSearchTerm(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	mockClient := &Client{}
 
 	_, err := mockClient.Search(ctx, "", SearchModifierNone, nil)

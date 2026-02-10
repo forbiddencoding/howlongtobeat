@@ -1,15 +1,18 @@
 package howlongtobeat
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func Test_detailHTTPRequest(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	var (
 		headers = map[string]string{
@@ -59,7 +62,8 @@ func Test_detailHTTPRequest(t *testing.T) {
 }
 
 func Test_Detail(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	mockClient, err := New()
 	if err != nil {
@@ -77,7 +81,8 @@ func Test_Detail(t *testing.T) {
 }
 
 func Test_Detail_EmptyIgnWikiNav(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	mockClient, err := New()
 	if err != nil {
@@ -95,7 +100,9 @@ func Test_Detail_EmptyIgnWikiNav(t *testing.T) {
 }
 
 func Test_Detail_InvalidGameID(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	mockClient := &Client{}
 
 	_, err := mockClient.Detail(ctx, 0)

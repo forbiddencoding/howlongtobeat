@@ -1,9 +1,11 @@
 package howlongtobeat
 
 import (
+	"context"
 	"math"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func Test_SearchGame_Reduce(t *testing.T) {
@@ -126,7 +128,8 @@ func Test_Reduce(t *testing.T) {
 }
 
 func Test_SearchSimple(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	mockClient, err := New()
 	if err != nil {
@@ -144,7 +147,8 @@ func Test_SearchSimple(t *testing.T) {
 }
 
 func Test_DetailsSimple(t *testing.T) {
-	ctx := t.Context()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	mockClient, err := New()
 	if err != nil {
