@@ -1,42 +1,16 @@
-/*
- * BSD 3-Clause License
- *
- * Copyright (c) 2023. Edgar Schmidt
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
- * disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided with the distribution.
- *
- * Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package howlongtobeat
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 	"testing"
 )
 
 func Test_detailHTTPRequest(t *testing.T) {
+	ctx := t.Context()
+
 	var (
 		headers = map[string]string{
 			http.CanonicalHeaderKey("User-Agent"):       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
@@ -54,9 +28,9 @@ func Test_detailHTTPRequest(t *testing.T) {
 		mockClient = &Client{}
 	)
 
-	req, err := mockClient.detailHTTPRequest(context.Background(), gameID)
+	req, err := mockClient.detailHTTPRequest(ctx, gameID)
 	if err != nil {
-		t.Fatalf("received error from detailHTTPRequest(): %s", err.Error())
+		t.Fatalf("received error from detailHTTPRequest(): %v", err)
 	}
 
 	if req.Method != http.MethodGet {
@@ -75,7 +49,7 @@ func Test_detailHTTPRequest(t *testing.T) {
 
 	for header, value := range headers {
 		if req.Header.Get(header) != value {
-			errs = errors.Join(errs, errors.New(fmt.Sprintf("detailHTTPRequest() did not set the correct %s header: want: %s, received: %s", header, value, req.Header.Get(header))))
+			errs = errors.Join(errs, fmt.Errorf("detailHTTPRequest() did not set the correct %s header: want: %s, received: %s", header, value, req.Header.Get(header)))
 		}
 	}
 
@@ -85,12 +59,14 @@ func Test_detailHTTPRequest(t *testing.T) {
 }
 
 func Test_Detail(t *testing.T) {
+	ctx := t.Context()
+
 	mockClient, err := New()
 	if err != nil {
 		t.Fatalf("New() returned error: %v", err)
 	}
 
-	result, err := mockClient.Detail(context.TODO(), 10270)
+	result, err := mockClient.Detail(ctx, 10270)
 	if err != nil {
 		t.Fatalf("Detail() error = %v", err)
 	}
@@ -101,12 +77,14 @@ func Test_Detail(t *testing.T) {
 }
 
 func Test_Detail_EmptyIgnWikiNav(t *testing.T) {
+	ctx := t.Context()
+
 	mockClient, err := New()
 	if err != nil {
 		t.Fatalf("New() returned error: %v", err)
 	}
 
-	result, err := mockClient.Detail(context.TODO(), 14286)
+	result, err := mockClient.Detail(ctx, 14286)
 	if err != nil {
 		t.Fatalf("Detail() error = %v", err)
 	}
@@ -117,11 +95,15 @@ func Test_Detail_EmptyIgnWikiNav(t *testing.T) {
 }
 
 func Test_Detail_InvalidGameID(t *testing.T) {
+	ctx := t.Context()
 	mockClient := &Client{}
 
-	_, err := mockClient.Detail(context.TODO(), 0)
-	if strings.Compare(err.Error(), "gameID is required") != 0 {
-		t.Fatalf(`Detail() expected "gameID required" error, but received: %v`, err)
+	_, err := mockClient.Detail(ctx, 0)
+	if err == nil {
+		t.Fatalf("Detail() expected error, but received: %v", err)
+	}
+	if !errors.Is(err, GameIDRequiredErr) {
+		t.Fatalf(`Detail() expected "%v" error, but received: %v`, GameIDRequiredErr, err)
 	}
 }
 
